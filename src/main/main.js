@@ -3,14 +3,14 @@ const path = require('path')
 const fs = require('fs')
 
 // 部署到场外打包时
-// const ip = '192.168.2.12' // 场外基地ip
+const ip = 'http://192.168.2.12:30734' // 场外基地ip
 
 // 部署到场内
-// const ip = '192.168.2.15' // 智元场内ip
+// const ip = 'http://192.168.2.15' // 智元场内ip
 
-const p = path.join(app.getPath('desktop'), 'ip.txt')
+// const p = path.join(app.getPath('desktop'), 'ip.txt')
 
-const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : 'http://192.168.2.12:30734'
+// const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : 'http://192.168.2.12:30734'
 
 app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', ip)
 // 不支持了
