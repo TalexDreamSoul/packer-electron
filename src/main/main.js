@@ -92,7 +92,7 @@ function injectHook(win) {
 
       const {u,p} = el.dataset
       const pos = (p || 'right') + '-window'
-      
+
       if ( !u ) return
 
       el.addEventListener('click', e => {
