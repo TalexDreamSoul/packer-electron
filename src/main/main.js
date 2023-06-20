@@ -92,7 +92,8 @@ function injectHook(win) {
         if ( !el ) return
         const { u, p } = el.dataset
         if ( !u ) return searchFor(el.parentElement)
-        console.log(u, p)
+         const pos = (p || 'right') + '-window'
+        ipcRenderer.send(pos, u)
     }
 
     document.onclick = e => {
