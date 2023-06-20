@@ -118,7 +118,7 @@ function initial() {
     // 打开控制台
     // context.mainWindow.webContents.openDevTools({ mode: 'detach' })
     context.mainWindow.webContents.on('did-navigate-in-page', (event, url) => {
-      if (url === `http://${ip}:30734/maps`) {
+      if (url === `${ip}/maps`) {
         injectHook(context.mainWindow)
       }
     })
