@@ -89,10 +89,10 @@ function injectHook(win) {
     const { ipcRenderer } = require('electron')
 
     document.querySelectorAll('.maps-foot-r button').forEach((el, index) => {
-      const pos = index !== 1 ? 'left-window' : 'right-window'
 
-      const u = el.dataset?.u
-
+      const {u,p} = el.dataset
+      const pos = (p || 'right') + '-window'
+      
       if ( !u ) return
 
       el.addEventListener('click', e => {
