@@ -1,16 +1,16 @@
-const { app, BrowserWindow, ipcMain, screen, protocol, session } = require('electron')
+const { app, BrowserWindow, ipcMain, screen, protocol, session, Notification } = require('electron')
 const path = require('path')
 const fs = require('fs')
 
 // 部署到场外打包时
-const ip = 'http://192.168.2.12:30734' // 场外基地ip
+// const ip = '192.168.2.12' // 场外基地ip
 
 // 部署到场内
-// const ip = 'http://192.168.2.15' // 智元场内ip
+// const ip = '192.168.2.15' // 智元场内ip
 
-// const p = path.join(app.getPath('desktop'), 'ip.txt')
+const p = path.join(app.getPath('desktop'), 'ip.txt')
 
-// const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : 'http://192.168.2.12:30734'
+const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : 'http://192.168.2.12:30734'
 
 app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', ip)
 // 不支持了
@@ -118,9 +118,14 @@ function initial() {
     // 打开控制台
     // context.mainWindow.webContents.openDevTools({ mode: 'detach' })
     context.mainWindow.webContents.on('did-navigate-in-page', (event, url) => {
-      if (url === `${ip}/maps`) {
-        injectHook(context.mainWindow)
-      }
+      new Notification({
+        title: '页面已重定向...',
+        subtitle: url,
+        body: 'URL: ' + url
+      }).show()
+      // if (url === `http://${ip}:30734/maps`) {
+      injectHook(context.mainWindow)
+      // }
     })
   })
   handleListener()
