@@ -8,13 +8,13 @@ const fs = require('fs')
 // 部署到场内
 // const ip = '192.168.2.15' // 智元场内ip
 
-const p = path.join(process.cwd(), 'ip.txt')
+const p = path.join(app.getPath('desktop'), 'ip.txt')
 
-const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : '192.168.2.12'
+const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : 'http://192.168.2.12:30734'
 
-app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', `http://${ip}:30734`)
+app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', ip)
 // 不支持了
-app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-secure', `http://${ip}:30734`)
+app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-secure', ip)
 //解决10.X版本跨域不成功问题(上线删除)
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
 const context = {
@@ -43,16 +43,24 @@ function getTargetDisplay(filter) {
   return [...screen.getAllDisplays()].filter(filter)
 }
 
+function getDisplayFallbackFilter(filter) {
+  const displays = getTargetDisplay(filter)
+
+  if (displays.length === 0) {
+    return [...screen.getPrimaryDisplay()]
+  } else return displays
+}
+
 const getLeftDisplay = () => {
   const primaryDisplay = screen.getPrimaryDisplay()
 
-  return getTargetDisplay((display) => display.bounds.x < primaryDisplay.bounds.x)?.[0]
+  return getDisplayFallbackFilter((display) => display.bounds.x < primaryDisplay.bounds.x)?.[0]
 }
 
 const getRightDisplay = () => {
   const primaryDisplay = screen.getPrimaryDisplay()
 
-  return getTargetDisplay((display) => display.bounds.x > primaryDisplay.bounds.x)?.[0]
+  return getDisplayFallbackFilter((display) => display.bounds.x > primaryDisplay.bounds.x)?.[0]
 }
 const createWindow = (url, options) => {
   const win = new BrowserWindow({
@@ -104,7 +112,7 @@ function injectHook(win) {
 
 function initial() {
   // context.mainWindow = createWindow('http://localhost:3000/Maps')
-  context.mainWindow = createWindow(`https://${ip}:30734/login`)
+  context.mainWindow = createWindow(`${ip}/login`)
 
   context.mainWindow.once('ready-to-show', () => {
     // 打开控制台
