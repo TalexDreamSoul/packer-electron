@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen, protocol, session, Notification } = require('electron')
+const { app, BrowserWindow, ipcMain, screen, protocol, session } = require('electron')
 const path = require('path')
 const fs = require('fs')
 
@@ -88,21 +88,32 @@ function injectHook(win) {
     console.log('[Hook] Electron hook initialed!')
     const { ipcRenderer } = require('electron')
 
-    document.querySelectorAll('.maps-foot-r button').forEach((el, index) => {
+    function searchFor(el) {
+        if ( !el ) return
+        const { u, p } = el.dataset
+        if ( !u ) return searchFor(el.parentElement)
+        console.log(u, p)
+    }
 
-      const {u,p} = el.dataset
-      const pos = (p || 'right') + '-window'
+    document.onclick = e => {
+        searchFor(e.target)
+    }
 
-      if ( !u ) return
+    // document.querySelectorAll('.maps-foot-r button').forEach((el, index) => {
 
-      el.addEventListener('click', e => {
-        e.preventDefault();
+    //   const {u,p} = el.dataset
+    //   const pos = (p || 'right') + '-window'
 
-        ipcRenderer.send(pos, u)
-        console.log('Click', pos, u)
-      })
+    //   if ( !u ) return
 
-    })
+    //   el.addEventListener('click', e => {
+    //     e.preventDefault();
+
+    //     ipcRenderer.send(pos, u)
+    //     console.log('Click', pos, u)
+    //   })
+
+    // })
   `
 
   const { webContents } = win
@@ -117,12 +128,12 @@ function initial() {
   context.mainWindow.once('ready-to-show', () => {
     // 打开控制台
     // context.mainWindow.webContents.openDevTools({ mode: 'detach' })
-    context.mainWindow.webContents.on('did-navigate-in-page', (event, url) => {
-      new Notification({
-        title: '页面已重定向...',
-        subtitle: url,
-        body: 'URL: ' + url
-      }).show()
+    context.mainWindow.webContents.on('did-navigate', () => {
+      // new Notification({
+      //   title: '页面已重定向...',
+      //   subtitle: url,
+      //   body: 'URL: ' + url
+      // }).show()
       // if (url === `http://${ip}:30734/maps`) {
       injectHook(context.mainWindow)
       // }
