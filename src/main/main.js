@@ -46,9 +46,9 @@ function getTargetDisplay(filter) {
 function getDisplayFallbackFilter(filter) {
   const displays = getTargetDisplay(filter)
 
-  if (displays.length === 0) {
-    return [...screen.getPrimaryDisplay()]
-  } else return displays
+  if (!displays || displays.length === 0) {
+    return [screen.getPrimaryDisplay()]
+  } else return [...displays]
 }
 
 const getLeftDisplay = () => {
