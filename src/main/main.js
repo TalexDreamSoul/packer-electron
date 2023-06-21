@@ -160,17 +160,28 @@ function handleListener() {
     window.focus()
     window.setFullScreen(true)
   }
+
   ipcMain.on('left-window', (e, url) => {
     const { bounds } = getLeftDisplay()
     const { x, y } = bounds
-    const win = context.leftWindow || (context.leftWindow = createWindow(url, { x, y }))
+    let win = context.leftWindow
+
+    if (win && win.isDestroyed()) {
+      win = context.leftWindow = createWindow(url, { x, y })
+    }
+
     processWindow(win)
   })
 
   ipcMain.on('right-window', (e, url) => {
     const { bounds } = getRightDisplay()
     const { x, y } = bounds
-    const win = context.rightWindow || (context.rightWindow = createWindow(url, { x, y }))
+    let win = context.rightWindow
+
+    if (win && win.isDestroyed()) {
+      win = context.rightWindow = createWindow(url, { x, y })
+    }
+
     processWindow(win)
   })
 }
