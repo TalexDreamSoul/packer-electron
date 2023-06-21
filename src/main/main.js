@@ -155,28 +155,23 @@ function handleVoice() {
   })
 }
 function handleListener() {
+  function processWindow(window) {
+    window.show()
+    window.focus()
+    window.setFullScreen(true)
+  }
   ipcMain.on('left-window', (e, url) => {
     const { bounds } = getLeftDisplay()
     const { x, y } = bounds
-    if (!context.leftWindow) {
-      context.leftWindow = createWindow(url, { x, y })
-      context.leftWindow.show()
-    } else {
-      context.leftWindow.loadURL(url)
-    }
-    context.leftWindow.setFullScreen(true)
+    const win = context.leftWindow || (context.leftWindow = createWindow(url, { x, y }))
+    processWindow(win)
   })
 
   ipcMain.on('right-window', (e, url) => {
     const { bounds } = getRightDisplay()
     const { x, y } = bounds
-    if (!context.rightWindow) {
-      context.rightWindow = createWindow(url, { x, y })
-      context.rightWindow.show()
-    } else {
-      context.rightWindow.loadURL(url)
-    }
-    context.rightWindow.setFullScreen(true)
+    const win = context.rightWindow || (context.rightWindow = createWindow(url, { x, y }))
+    processWindow(win)
   })
 }
 
