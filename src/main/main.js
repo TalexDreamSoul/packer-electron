@@ -88,10 +88,10 @@ function injectHook(win) {
 
     !(() => {
       // if ( document.__electron_event_registered ) {
-        return console.log('%c[Hook] %c Electron hook already initialed, none inject!', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#000')
+        // return console.log('%c[Hook]%c Electron hook already initialed, none inject!', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#000')
       // }
       document.__electron_event_registered = true
-      console.log('%c[Hook] %c Electron hook initialed.', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#000')
+      console.log('%c[Hook]%c Electron hook initialed.', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#000')
       const { ipcRenderer } = require('electron')
 
       function searchFor(el) {
