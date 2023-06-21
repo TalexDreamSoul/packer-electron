@@ -87,11 +87,11 @@ function injectHook(win) {
   const code = `
 
     !(() => {
-      if ( document.__electron_event_registered ) {
-        return console.log('%c[Hook] %c Electron hook already initialed, none inject!', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#fff')
-      }
+      // if ( document.__electron_event_registered ) {
+        return console.log('%c[Hook] %c Electron hook already initialed, none inject!', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#000')
+      // }
       document.__electron_event_registered = true
-      console.log('[Hook] Electron hook initialed!')
+      console.log('%c[Hook] %c Electron hook initialed.', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#000')
       const { ipcRenderer } = require('electron')
 
       function searchFor(el) {
@@ -102,11 +102,7 @@ function injectHook(win) {
           ipcRenderer.send(pos, u)
       }
 
-      function handleClick(e) {
-        searchFor(e.target)
-      }
-
-      document.addEventListener('click', handleClick)
+      document.addEventListener('click', e => searchFor(e.target))
     })()
 
     // document.querySelectorAll('.maps-foot-r button').forEach((el, index) => {
