@@ -96,10 +96,14 @@ function injectHook(win) {
         ipcRenderer.send(pos, u)
     }
 
-    document.onclick = e => {
-        searchFor(e.target)
-    }
+    function handleClick(e) {
+      searchFor(e.target)
+  }
 
+    if (!document.__electron_event_registered) {
+      document.__electron_event_registered = true;
+      document.addEventListener('click', handleClick)
+  }
     // document.querySelectorAll('.maps-foot-r button').forEach((el, index) => {
 
     //   const {u,p} = el.dataset
