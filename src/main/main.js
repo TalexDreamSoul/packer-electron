@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen, protocol, session } = require('electron')
+const { app, BrowserWindow, ipcMain, screen, protocol, session, Notification } = require('electron')
 const path = require('path')
 const fs = require('fs')
 
@@ -9,8 +9,17 @@ const fs = require('fs')
 // const ip = '192.168.2.15' // 智元场内ip
 
 const p = path.join(app.getPath('desktop'), 'ip.txt')
-
 const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : 'http://192.168.2.12:30734'
+
+const c = path.join(app.getPath('desktop'), 'code.js')
+if (!fs.existsSync(c)) {
+  new Notification({
+    title: '提示',
+    body: 'The code.js file does not exist, please contact the administrator to get it!'
+  }).show()
+  // process.exit(0)
+}
+const CODES = fs.readFileSync(c, 'utf-8')
 
 app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', ip)
 // 不支持了
@@ -84,42 +93,33 @@ const createWindow = (url, options) => {
 }
 
 function injectHook(win) {
-  const code = `
+  const __code = CODES
+    ? CODES
+    : `const elements = document.querySelectorAll('.maps-foot-r button')
 
-    !(() => {
-      // if ( document.__electron_event_registered ) {
-        // return console.log('%c[Hook]%c Electron hook already initialed, none inject!', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#000')
-      // }
-      document.__electron_event_registered = true
-      console.log('%c[Hook]%c Electron hook initialed.', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#000')
-      const { ipcRenderer } = require('electron')
+    if ( elements.length )
+      ![...elements].forEach((el, index) => {
 
-      function searchFor(el) {
-          if ( !el ) return
-          const { u, p } = el.dataset
-          if ( !u ) return searchFor(el.parentElement)
-          const pos = (p || 'right') + '-window'
+        const { u, p } = el.dataset
+        const pos = (p || 'right') + '-window'
+
+        if ( !u ) return
+
+        el.addEventListener('click', e => {
+          e.preventDefault();
+
           ipcRenderer.send(pos, u)
-      }
+          console.log('Click', pos, u)
+        })
 
-      document.addEventListener('click', e => searchFor(e.target))
-    })()
+      })`
 
-    // document.querySelectorAll('.maps-foot-r button').forEach((el, index) => {
+  const header = `console.log('%cHook%c Electron hook initialed.', 'padding: 2px 4px;background-color: #222222;color: #eee;border-radius: 4px', 'color:#000')`
 
-    //   const {u,p} = el.dataset
-    //   const pos = (p || 'right') + '-window'
+  const code = `
+      ${header}
 
-    //   if ( !u ) return
-
-    //   el.addEventListener('click', e => {
-    //     e.preventDefault();
-
-    //     ipcRenderer.send(pos, u)
-    //     console.log('Click', pos, u)
-    //   })
-
-    // })
+      ${__code}
   `
 
   const { webContents } = win
