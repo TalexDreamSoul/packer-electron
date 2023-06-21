@@ -85,26 +85,29 @@ const createWindow = (url, options) => {
 
 function injectHook(win) {
   const code = `
-    if ( document.__electron_event_registered ) {
-      return console.log('%c[Hook] %c Electron hook already initialed, none inject!', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#fff')
-    }
-    document.__electron_event_registered = true
-    console.log('[Hook] Electron hook initialed!')
-    const { ipcRenderer } = require('electron')
 
-    function searchFor(el) {
-        if ( !el ) return
-        const { u, p } = el.dataset
-        if ( !u ) return searchFor(el.parentElement)
-         const pos = (p || 'right') + '-window'
-        ipcRenderer.send(pos, u)
-    }
+    !(() => {
+      if ( document.__electron_event_registered ) {
+        return console.log('%c[Hook] %c Electron hook already initialed, none inject!', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#fff')
+      }
+      document.__electron_event_registered = true
+      console.log('[Hook] Electron hook initialed!')
+      const { ipcRenderer } = require('electron')
 
-    function handleClick(e) {
-      searchFor(e.target)
-    }
+      function searchFor(el) {
+          if ( !el ) return
+          const { u, p } = el.dataset
+          if ( !u ) return searchFor(el.parentElement)
+          const pos = (p || 'right') + '-window'
+          ipcRenderer.send(pos, u)
+      }
 
-    document.addEventListener('click', handleClick)
+      function handleClick(e) {
+        searchFor(e.target)
+      }
+
+      document.addEventListener('click', handleClick)
+    })()
 
     // document.querySelectorAll('.maps-foot-r button').forEach((el, index) => {
 
