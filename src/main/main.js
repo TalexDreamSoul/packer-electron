@@ -85,6 +85,10 @@ const createWindow = (url, options) => {
 
 function injectHook(win) {
   const code = `
+    if ( document.__electron_event_registered ) {
+      return console.log('%c[Hook] %c Electron hook already initialed, none inject!', 'padding: 2px 4px;background-color: #222222;color: #eee', 'color:#fff')
+    }
+    document.__electron_event_registered = true
     console.log('[Hook] Electron hook initialed!')
     const { ipcRenderer } = require('electron')
 
@@ -98,12 +102,10 @@ function injectHook(win) {
 
     function handleClick(e) {
       searchFor(e.target)
-  }
+    }
 
-    if (!document.__electron_event_registered) {
-      document.__electron_event_registered = true;
-      document.addEventListener('click', handleClick)
-  }
+    document.addEventListener('click', handleClick)
+
     // document.querySelectorAll('.maps-foot-r button').forEach((el, index) => {
 
     //   const {u,p} = el.dataset
@@ -133,7 +135,7 @@ function initial() {
   context.mainWindow.once('ready-to-show', () => {
     // 打开控制台
     // context.mainWindow.webContents.openDevTools({ mode: 'detach' })
-    context.mainWindow.webContents.on('did-navigate', () => {
+    context.mainWindow.webContents.on('did-navigate-in-page', () => {
       // new Notification({
       //   title: '页面已重定向...',
       //   subtitle: url,
