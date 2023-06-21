@@ -166,7 +166,7 @@ function handleListener() {
     const { x, y } = bounds
     let win = context.leftWindow
 
-    if (win && win.isDestroyed()) {
+    if (!win || win.isDestroyed()) {
       win = context.leftWindow = createWindow(url, { x, y })
     }
 
@@ -178,7 +178,7 @@ function handleListener() {
     const { x, y } = bounds
     let win = context.rightWindow
 
-    if (win && win.isDestroyed()) {
+    if (!win || win.isDestroyed()) {
       win = context.rightWindow = createWindow(url, { x, y })
     }
 
