@@ -32,3 +32,5 @@ $ pnpm build:mac
 # For Linux
 $ pnpm build:linux
 ```
+### run
+把code.js（自定义逻辑）和ip.txt（ip）放到桌面

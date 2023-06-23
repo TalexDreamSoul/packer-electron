@@ -75,6 +75,7 @@ const createWindow = (url, options) => {
   const win = new BrowserWindow({
     width: 1280,
     height: 720,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInSubFrames: true,
@@ -134,15 +135,15 @@ function initial() {
   context.mainWindow.once('ready-to-show', () => {
     // 打开控制台
     // context.mainWindow.webContents.openDevTools({ mode: 'detach' })
-    context.mainWindow.webContents.on('did-navigate-in-page', () => {
+    context.mainWindow.webContents.on('did-navigate-in-page',  (event, url)=>{
       // new Notification({
       //   title: '页面已重定向...',
       //   subtitle: url,
       //   body: 'URL: ' + url
       // }).show()
-      // if (url === `http://${ip}:30734/maps`) {
+      if (url === `${ip}/maps`) { 
       injectHook(context.mainWindow)
-      // }
+      }
     })
   })
   handleListener()
