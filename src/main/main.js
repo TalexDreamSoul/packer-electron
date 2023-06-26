@@ -155,6 +155,7 @@ function handleVoice() {
     callback(permission === 'media')
   })
 }
+
 function handleListener() {
   function processWindow(window) {
     window.show()
@@ -169,6 +170,8 @@ function handleListener() {
 
     if (!win || win.isDestroyed()) {
       win = context.leftWindow = createWindow(url, { x, y })
+    } else {
+      win.loadURL(url)
     }
 
     processWindow(win)
@@ -181,6 +184,8 @@ function handleListener() {
 
     if (!win || win.isDestroyed()) {
       win = context.rightWindow = createWindow(url, { x, y })
+    } else {
+      win.loadURL(url)
     }
 
     processWindow(win)
